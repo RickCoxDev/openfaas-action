@@ -1,0 +1,51 @@
+# action.yml
+name: 'OpenFaaS build, push, and deploy'
+description: 'Builds a docker image from your OpenFaaS function and pushes it to your registry'
+branding:
+  icon: upload-cloud
+  color: red
+inputs:
+  stack-file:
+    description: 'The OpenFaaS function definition file'
+    required: true
+    default: 'stack.yml'
+  docker-username:
+    description: 'Your docker username with push authorization'
+    required: true
+  docker-password:
+    description: 'Your docker password'
+    required: true
+  platforms:
+    description: 'the platform abbreviations to build for, e. g. linux/amd64,linux/arm/v7'
+    required: false
+    default: 'linux/amd64'
+  deploy:
+    description: 'Whether the built image shall be deployed (false=no, true=yes)'
+    required: false
+    default: 'false'
+  openfaas-gateway:
+    description: 'OpenFaaS gateway URL (http(s)://my-public-gateway.tld)'
+    required: false
+  openfaas-username:
+    description: 'User for authenticating at OpenFaaS gateway'
+    required: false
+    default: 'admin'
+  openfaas-password:
+    description: 'Password for authenticating at OpenFaaS gateway'
+    required: false
+  
+outputs:
+  tag:
+    description: 'Image tag built'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.stack-file }}
+    - ${{ inputs.docker-username }}
+    - ${{ inputs.docker-password }}
+    - ${{ inputs.platforms }}
+    - ${{ inputs.deploy }}
+    - ${{ inputs.openfaas-gateway }}
+    - ${{ inputs.openfaas-username }}
+    - ${{ inputs.openfaas-password }}
